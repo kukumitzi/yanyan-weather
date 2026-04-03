@@ -5,8 +5,96 @@ from openai import OpenAI
 
 st.set_page_config(page_title="yanyan_Weather", page_icon="🌤️", layout="centered")
 
-st.title("🌤️ yanyan_Weather")
-st.caption("AI-powered weather insights using OpenAI")
+# --- Dark mode state ---
+if "dark_mode" not in st.session_state:
+    st.session_state["dark_mode"] = False
+
+# --- Dark/Light mode CSS ---
+def apply_theme():
+    if st.session_state["dark_mode"]:
+        css = """
+        <style>
+        html, body, [data-testid="stAppViewContainer"], [data-testid="stApp"] {
+            background-color: #1a1a2e !important;
+            color: #e0e0e0 !important;
+        }
+        [data-testid="stSidebar"] {
+            background-color: #16213e !important;
+            color: #e0e0e0 !important;
+        }
+        [data-testid="stSidebar"] * {
+            color: #e0e0e0 !important;
+        }
+        [data-testid="stHeader"] {
+            background-color: #1a1a2e !important;
+        }
+        h1, h2, h3, h4, h5, h6, p, span, label, div {
+            color: #e0e0e0 !important;
+        }
+        [data-testid="stTextInput"] input {
+            background-color: #0f3460 !important;
+            color: #e0e0e0 !important;
+            border-color: #e94560 !important;
+        }
+        [data-testid="stMetric"] {
+            background-color: #16213e !important;
+            border-radius: 8px !important;
+            padding: 8px !important;
+        }
+        [data-testid="stMetricValue"], [data-testid="stMetricDelta"] {
+            color: #e0e0e0 !important;
+        }
+        [data-testid="stInfo"] {
+            background-color: #0f3460 !important;
+            color: #e0e0e0 !important;
+        }
+        [data-testid="stAlert"] {
+            background-color: #0f3460 !important;
+        }
+        hr {
+            border-color: #e94560 !important;
+        }
+        .stButton > button {
+            background-color: #0f3460 !important;
+            color: #e0e0e0 !important;
+            border-color: #e94560 !important;
+        }
+        .stButton > button[kind="primary"] {
+            background-color: #e94560 !important;
+            color: #ffffff !important;
+        }
+        </style>
+        """
+    else:
+        css = """
+        <style>
+        html, body, [data-testid="stAppViewContainer"], [data-testid="stApp"] {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+        }
+        [data-testid="stSidebar"] {
+            background-color: #f0f2f6 !important;
+            color: #000000 !important;
+        }
+        </style>
+        """
+    st.markdown(css, unsafe_allow_html=True)
+
+apply_theme()
+
+# --- Top bar: title + dark mode toggle ---
+title_col, toggle_col = st.columns([6, 1])
+
+with title_col:
+    st.title("🌤️ yanyan_Weather")
+    st.caption("AI-powered weather insights using OpenAI")
+
+with toggle_col:
+    st.write("")  # spacer
+    toggle_label = "🌙" if not st.session_state["dark_mode"] else "☀️"
+    if st.button(toggle_label, help="Toggle dark/light mode", key="theme_toggle"):
+        st.session_state["dark_mode"] = not st.session_state["dark_mode"]
+        st.rerun()
 
 # Sidebar for API key
 with st.sidebar:
